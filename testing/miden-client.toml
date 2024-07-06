@@ -1,0 +1,12 @@
+default_account_id = "0x9d42b8b89361af5a"
+
+[rpc]
+timeout_ms = 10000
+
+[rpc.endpoint]
+protocol = "https"
+host = "18.203.155.106"
+port = 57291
+
+[store]
+database_filepath = "store.sqlite3"
