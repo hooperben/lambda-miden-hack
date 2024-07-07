@@ -2,28 +2,25 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import RustComponent from "@/src/rust-component";
 import { WebClient } from "@demox-labs/miden-sdk";
-const inter = Inter({ subsets: ["latin"] });
+import NavBar from "@/components/nav-bar";
+import useAccountStore from "@/stores/useAccountStore";
+import { useEffect } from "react";
+import NoteSummary from "@/components/note-summary";
 
 export default function Home() {
-  const tester = () => {
-    console.log("hello");
-    // console.log(WebClient);
+  const accountId = useAccountStore((state) => state.accountId);
 
-    // console.log(webClient);
-    // await webClient.create_client({
-    //   node_url: "18.203.155.106:57291"
-    // });
-    // const accountId = await webClient.new_wallet("OffChain", true);
-    // console.log(accountId);
-  };
+  useEffect(() => {
+    console.log("changed account:", accountId);
+  }, [accountId]);
 
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div>hello</div>
-      <button onClick={tester}>Hello</button>
-      <RustComponent />
+    <main className={`flex flex-col w-full font-mono`}>
+      <NavBar />
+
+      <NoteSummary />
+
+      {/* <RustComponent /> */}
     </main>
   );
 }
