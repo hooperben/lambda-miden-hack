@@ -12,6 +12,10 @@ To view the accounts:
 ```
 miden account -l
 
+# or specific details
+
+miden account -s 0x9ea2f38b3a1ef69d
+
 ```
 
 Account ID: 0x9546b214dc1445fc
