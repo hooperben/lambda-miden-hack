@@ -4,16 +4,26 @@ use figment::{
     Figment, Metadata, Profile, Provider,
 };
 use miden_client::{
-    accounts::AccountId, auth::StoreAuthenticator, config::RpcConfig, crypto::RpoRandomCoin,
-    rpc::TonicRpcClient, store::sqlite_store::config::SqliteStoreConfig,
-    store::sqlite_store::SqliteStore, Client, ClientError, Felt,
+    accounts::AccountId,
+    auth::StoreAuthenticator,
+    config::RpcConfig,
+    crypto::RpoRandomCoin,
+    notes::{NoteFile, NoteId},
+    rpc::TonicRpcClient,
+    store::sqlite_store::config::SqliteStoreConfig,
+    store::sqlite_store::SqliteStore,
+    utils::Deserializable,
+    Client, ClientError, Felt,
 };
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use std::{
+    fs::File,
+    io::Read,
     path::{Path, PathBuf},
     rc::Rc,
 };
+use tokio;
 #[derive(Debug, Default, Eq, PartialEq, Deserialize, Serialize)]
 pub struct CliConfig {
     pub rpc: RpcConfig,
@@ -61,7 +71,8 @@ fn load_config(config_file: &Path) -> Result<CliConfig, String> {
         })
 }
 
-fn main() -> Result<(), String> {
+#[tokio::main]
+async fn main() -> Result<(), String> {
     let (cli_config, _config_path) = load_config_file()?;
 
     let store = SqliteStore::new(&cli_config.store).map_err(ClientError::StoreError)?;
@@ -73,7 +84,7 @@ fn main() -> Result<(), String> {
     let rng = RpoRandomCoin::new(coin_seed.map(Felt::new));
     let authenticator = StoreAuthenticator::new_with_rng(store.clone(), rng);
 
-    let client = Client::new(
+    let mut client = Client::new(
         TonicRpcClient::new(&cli_config.rpc),
         rng,
         store,
@@ -104,6 +115,31 @@ fn main() -> Result<(), String> {
     };
 
     let is_on_chain = account.is_on_chain();
+
+    println!("note details");
+
+    let path = "note.mno";
+
+    let mut current_dir = std::env::current_dir().map_err(|err| err.to_string())?;
+    current_dir.push(path);
+
+    let mut contents = vec![];
+    let mut _file = File::open(current_dir)
+        .and_then(|mut f| f.read_to_end(&mut contents))
+        .map_err(|err| err.to_string());
+
+    let note_file = NoteFile::read_from_bytes(&contents).map_err(|err| err.to_string())?;
+
+    let result = client
+        .import_note(note_file)
+        .await
+        .map_err(|err| err.to_string());
+
+    if let Ok(note_id) = result {
+        println!("Succesfully imported note {}", note_id.inner());
+    } else {
+        println!("Failed to parse file {}", path.to_string());
+    }
 
     return Ok(());
 }

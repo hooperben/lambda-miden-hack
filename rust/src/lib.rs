@@ -4,29 +4,18 @@ use figment::{
     value::{Dict, Map},
     Figment, Metadata, Profile, Provider,
 };
+use miden_cli::utils::parse_account_id;
 use miden_client::{
-    accounts::AccountStub,
-    auth::{StoreAuthenticator, TransactionAuthenticator},
-    config::RpcConfig,
-    crypto::{FeltRng, RpoRandomCoin},
-    rpc::{NodeRpcClient, TonicRpcClient},
-    store::sqlite_store::config::SqliteStoreConfig,
-    store::{
-        sqlite_store::SqliteStore, InputNoteRecord, NoteFilter as ClientNoteFilter,
-        OutputNoteRecord, Store,
-    },
-    Client, ClientError, Felt, IdPrefixFetchError,
+    auth::StoreAuthenticator, config::RpcConfig, crypto::RpoRandomCoin, rpc::TonicRpcClient,
+    store::sqlite_store::config::SqliteStoreConfig, store::sqlite_store::SqliteStore, Client,
+    ClientError, Felt,
 };
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use std::{
-    env,
-    fs::File,
-    io::Write,
     path::{Path, PathBuf},
     rc::Rc,
 };
-use uuid::Uuid;
 use wasm_bindgen::prelude::*;
 
 // general testing
@@ -81,7 +70,7 @@ fn load_config(config_file: &Path) -> Result<CliConfig, String> {
         })
 }
 
-pub fn main() -> Result<(), String> {
+pub fn client() -> Result<(), String> {
     let (cli_config, _config_path) = load_config_file()?;
 
     let store = SqliteStore::new(&cli_config.store).map_err(ClientError::StoreError)?;
@@ -100,14 +89,15 @@ pub fn main() -> Result<(), String> {
         authenticator,
         true,
     );
-    println!("Hello from rust!");
+
+    println!("hello");
 
     return Ok(());
 }
 
 #[test]
-fn test() {
-    assert_eq!(add(1, 2), 3);
+pub fn test_client() {
+    client();
 }
 
 // wasm exports

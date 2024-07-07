@@ -1,4 +1,4 @@
-default_account_id = "0x9d42b8b89361af5a"
+default_account_id = "0x9ea2f38b3a1ef69d"
 
 [rpc]
 timeout_ms = 10000

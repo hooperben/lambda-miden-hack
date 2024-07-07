@@ -10,4 +10,4 @@ rand = "0.8.5"
 uuid = { version = "1.6", features = ["serde", "v4"] }
 figment = { version = "0.10.19", features = ["toml", "env"] }
 serde = "1.0.203"
-tokio = "1.38.0"
+tokio = { version = "1", features = ["full"] }

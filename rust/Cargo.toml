@@ -14,3 +14,4 @@ rand = "0.8.5"
 uuid = { version = "1.6", features = ["serde", "v4"] }
 figment = { version = "0.10.19", features = ["toml", "env"]}
 serde = "1.0.203"
+miden-cli = {path = "../miden-client/bin/miden-cli"}
