@@ -1,0 +1,20 @@
+{
+  "name": "miden-sdk",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "build": "sh proto/build.sh"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.10.10",
+    "@grpc/proto-loader": "^0.7.13",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
+    "ts-proto": "^1.181.0"
+  }
+}
