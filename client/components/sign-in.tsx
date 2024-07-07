@@ -40,9 +40,13 @@ const SignIn = () => {
         </DropdownMenuGroup>
 
         {accountId !== "" && (
-          <DropdownMenuItem onClick={() => setAccountId("")}>
-            Log out
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem onClick={() => setAccountId("")}>
+              Log out
+            </DropdownMenuItem>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
