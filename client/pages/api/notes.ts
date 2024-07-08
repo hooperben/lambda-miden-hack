@@ -1,3 +1,4 @@
+import { getNoteData } from "@/helpers/get-note-data";
 import { midenSync } from "@/helpers/miden-sync";
 import { runCommand } from "@/helpers/run-command";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -6,17 +7,65 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // exec('echo "Hello, World!"');
+  await Promise.all([await midenSync()]);
 
-  await midenSync();
-  const formatNotes = (arg: string) => {
-    const notes = arg.split("\n");
-    return notes;
+  const extractHashes = (
+    input: string
+  ): { inputNotes: string[]; outputNotes: string[] } => {
+    const sections = input.split(/\n\s*Output Notes\s*\n══════════════\n/);
+
+    const inputSection = sections[0].split(
+      /\n\s*Input Notes\s*\n═════════════\n/
+    )[1];
+    const outputSection = sections[1] || "";
+
+    const hashRegex = /\b0x[a-fA-F0-9]{64}\b/g;
+
+    const getHashes = (section: string): string[] => {
+      const lines = section.split("\n");
+      const hashes: string[] = [];
+      for (const line of lines) {
+        const match = line.match(hashRegex);
+        if (match) {
+          hashes.push(...match);
+        }
+      }
+      return hashes;
+    };
+
+    const inputNotes = getHashes(inputSection);
+    const outputNotes = getHashes(outputSection);
+
+    return { inputNotes, outputNotes };
   };
-  const notes = await runCommand(
+
+  const command = await runCommand(
     "cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden notes -l",
-    formatNotes
+    extractHashes
   );
 
-  res.status(200).json({ notes });
+  interface Response {
+    inputNotes: string[];
+    outputNotes: string[];
+  }
+  let responses: Response = {
+    inputNotes: [],
+    outputNotes: [],
+  };
+
+  if (command?.inputNotes) {
+    for (const note of command?.inputNotes) {
+      const currentNoteDetails = await getNoteData(note);
+      responses.inputNotes.push(currentNoteDetails);
+    }
+  }
+
+  if (command?.outputNotes) {
+    for (const note of command?.outputNotes) {
+      const currentNoteDetails = await getNoteData(note);
+      responses.outputNotes.push(currentNoteDetails);
+    }
+  }
+
+  res.status(200).json({ notes: responses });
 }

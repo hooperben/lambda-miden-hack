@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,31 +8,39 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-
 import useAccountStore from "@/stores/useAccountStore";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-const testAccounts = ["0x9ea2f38b3a1ef69d", "0x96af2e5be4bbe43f"];
+type AccountInfo = {
+  accountId: string;
+  type: string;
+  storageMode: string;
+  nonce: number;
+};
 
 const SignIn = () => {
   const accountId = useAccountStore((state) => state.accountId);
   const setAccountId = useAccountStore((state) => state.changeAccountId);
 
-  const [loading, setLoading] = useState(false);
-
-  const handleSignInPress = async () => {
-    setLoading(true);
+  const getAccounts = async (): Promise<AccountInfo[]> => {
+    const request = await fetch("/api/account");
+    const data = await request.json();
+    return data.accounts;
   };
+
+  const {
+    data: accounts,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["todos"],
+    queryFn: getAccounts,
+  });
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="font-mono"
-          onClick={() => handleSignInPress()}
-        >
+        <Button variant="outline" className="font-mono">
           {accountId === "" ? "Sign In" : accountId}
         </Button>
       </DropdownMenuTrigger>
@@ -40,14 +49,15 @@ const SignIn = () => {
         <DropdownMenuLabel>Accounts</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {testAccounts.map((account) => (
-            <DropdownMenuItem
-              key={account}
-              onClick={() => setAccountId(account)}
-            >
-              <p className="font-mono">{account}</p>
-            </DropdownMenuItem>
-          ))}
+          {accounts &&
+            accounts.map((account) => (
+              <DropdownMenuItem
+                key={account.accountId}
+                onClick={() => setAccountId(account.accountId)}
+              >
+                <p className="font-mono">{account.accountId}</p>
+              </DropdownMenuItem>
+            ))}
         </DropdownMenuGroup>
 
         {accountId !== "" && (

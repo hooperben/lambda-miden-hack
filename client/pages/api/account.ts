@@ -9,17 +9,14 @@ type AccountInfo = {
   nonce: number;
 };
 
+const removePipe = (input: string): string => {
+  return input.startsWith("│ ") ? input.substring(2) : input;
+};
+
 function parseTableToArray(table: string): AccountInfo[] {
-  // Split the table into lines
   const lines = table.trim().split("\n");
-
-  // Extract the header line
-  const headers = lines[0].split("┆").map((header) => header.trim());
-
-  // Extract the data lines
   const dataLines = lines.slice(2); // Skip the header and divider lines
 
-  // Parse the data lines into objects
   const data: AccountInfo[] = dataLines
     .map((line) => {
       const [accountId, type, storageMode, nonce] = line
@@ -27,7 +24,7 @@ function parseTableToArray(table: string): AccountInfo[] {
         .map((cell) => cell.trim());
 
       return {
-        accountId,
+        accountId: removePipe(accountId),
         type,
         storageMode,
         nonce: parseInt(nonce, 10),
