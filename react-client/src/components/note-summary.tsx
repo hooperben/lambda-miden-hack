@@ -33,7 +33,7 @@ const NoteSummary = () => {
 
         const notes = await client.get_input_notes(
           // account_id: accounts[0].id,
-          "Committed"
+          "All"
         );
 
         console.log("set notes");
@@ -60,7 +60,10 @@ const NoteSummary = () => {
       console.log("synced state");
 
       console.log(accountId);
-      // console.log([note]);
+
+      const faucetId = "0xa685a26f911aaf06";
+
+      await client.fetch_and_cache_account_auth_by_pub_key(accountId); // console.log([note]);
 
       const checkExists = await client.get_input_note(note);
       console.log(checkExists);
