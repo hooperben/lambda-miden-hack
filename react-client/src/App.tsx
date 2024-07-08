@@ -1,20 +1,14 @@
-// src/App.js
 import React, { useEffect } from "react";
-import MidenApp from "./MidenApp";
-
-import { Toaster } from "./components/ui/toaster";
-import useAccountStore from "./stores/useAccountStore";
-import NavBar from "./components/nav-bar";
 import EmptyPage from "./components/empty-page";
-import "./globals.css";
+import NavBar from "./components/nav-bar";
 import NoteSummary from "./components/note-summary";
+import { Toaster } from "./components/ui/toaster";
+import { MidenClientStoreProvider } from "./contexts/miden-client-store";
+import "./globals.css";
+import useAccountStore from "./stores/useAccountStore";
 
 const App = () => {
   const accountId = useAccountStore((state) => state.accountId);
-
-  const testing = () => {
-    // uncomment this to break
-  };
 
   useEffect(() => {
     console.log("changed account:", accountId);
@@ -23,15 +17,14 @@ const App = () => {
 
   return (
     <div className={`flex flex-col w-full font-mono`}>
-      <>
+      <MidenClientStoreProvider>
         <Toaster />
         <NavBar />
 
         {accountId === "" && <EmptyPage />}
 
         {accountId !== "" && <NoteSummary />}
-        {/* <MidenApp /> */}
-      </>
+      </MidenClientStoreProvider>
     </div>
   );
 };

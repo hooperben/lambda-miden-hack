@@ -1,3 +1,7 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "./ui/button";
 import {
   Dialog,
   DialogContent,
@@ -6,16 +10,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Button } from "./ui/button";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -61,12 +58,14 @@ const NewTransaction = () => {
         </DialogTrigger>
         <DialogContent className="font-mono">
           <DialogHeader>
-            <DialogTitle>Create New Transaction</DialogTitle>
+            <DialogTitle className="text-center">
+              Create New Transaction
+            </DialogTitle>
             <DialogDescription>
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="w-2/3 space-y-6"
+                  className="flex flex-col justify-center"
                 >
                   <FormField
                     control={form.control}
@@ -81,12 +80,13 @@ const NewTransaction = () => {
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="recipient"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Recipient</FormLabel>
+                        <FormLabel>Recipient Address ID</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>

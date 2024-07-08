@@ -10,12 +10,14 @@ import {
 import { Button } from "./ui/button";
 
 import useAccountStore from "../stores/useAccountStore";
-
-const testAccounts = ["0x9ea2f38b3a1ef69d", "0x96af2e5be4bbe43f"];
+import { useContext, useEffect, useState } from "react";
+import { MidenClientStoreContext } from "../contexts/miden-client-store";
 
 const SignIn = () => {
   const accountId = useAccountStore((state) => state.accountId);
   const setAccountId = useAccountStore((state) => state.changeAccountId);
+
+  const { accounts } = useContext(MidenClientStoreContext);
 
   return (
     <DropdownMenu>
@@ -29,7 +31,7 @@ const SignIn = () => {
         <DropdownMenuLabel>Accounts</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {testAccounts.map((account) => (
+          {accounts.map((account) => (
             <DropdownMenuItem
               key={account}
               onClick={() => setAccountId(account)}
