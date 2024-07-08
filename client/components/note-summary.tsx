@@ -1,16 +1,18 @@
-import { Separator } from "@/components/ui/separator";
-import NewTransaction from "./new-transaction";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useQuery } from "@tanstack/react-query";
-import { NoteInfo } from "@/types/note";
-import { Card, CardContent } from "./ui/card";
+import { Separator } from "@/components/ui/separator";
 import useAccountStore from "@/stores/useAccountStore";
+import { NoteInfo } from "@/types/note";
+import { useQuery } from "@tanstack/react-query";
 import ImportNote from "./import-note";
+import NewTransaction from "./new-transaction";
+import ShareAsUrl from "./share-as-url";
+import { Button } from "./ui/button";
+import { Card, CardContent } from "./ui/card";
 
 const NoteSummary = () => {
   const accountId = useAccountStore((state) => state.accountId);
@@ -44,6 +46,19 @@ const NoteSummary = () => {
     </div>
   );
 
+  const getStatusColour = (status: string) => {
+    switch (status) {
+      case "Committed":
+        return "text-[color:yellow]";
+      case "Consumed":
+        return "text-[color:green]";
+      case "Spent":
+        return "text-[color:yellow]";
+      default:
+        return "text-gray-500";
+    }
+  };
+
   return (
     <div className="flex flex-col align-center justify-center mx-4">
       <div className="flex justify-between w-[98%] mt-4 items-center">
@@ -68,7 +83,18 @@ const NoteSummary = () => {
         notes.notes.inputNotes.map((note) => (
           <Accordion type="single" collapsible key={note.ID}>
             <AccordionItem value="item-1">
-              <AccordionTrigger>{note.ID}</AccordionTrigger>
+              <AccordionTrigger>
+                <div className="flex justify-between w-full">
+                  <div>{note.ID} </div>
+                  <div
+                    className={`mr-10 ${getStatusColour(
+                      note.Status.split(" ")[0]
+                    )}`}
+                  >
+                    {note.Status.split(" ")[0]}
+                  </div>
+                </div>
+              </AccordionTrigger>
               <AccordionContent>
                 <div>
                   <Separator className="m-3 max-w-[98%]" />
@@ -115,8 +141,24 @@ const NoteSummary = () => {
         notes.notes.outputNotes.map((note) => (
           <Accordion type="single" collapsible key={note.ID}>
             <AccordionItem value="item-1">
-              <AccordionTrigger>{note.ID}</AccordionTrigger>
+              <AccordionTrigger>
+                <div className="flex justify-between w-full">
+                  <div>{note.ID} </div>
+                  <div
+                    className={`mr-10 ${getStatusColour(
+                      note.Status.split(" ")[0]
+                    )}`}
+                  >
+                    {note.Status.split(" ")[0]}
+                  </div>
+                </div>
+              </AccordionTrigger>
               <AccordionContent>
+                <div className="flex justify-end gap-1">
+                  <Button>Export Note (.mno file)</Button>
+
+                  <ShareAsUrl note={note.ID} />
+                </div>
                 <div>
                   <Separator className="m-3 max-w-[98%]" />
 

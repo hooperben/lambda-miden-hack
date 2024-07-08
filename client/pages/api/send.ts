@@ -9,8 +9,6 @@ export default async function handler(
 ) {
   await Promise.all([await midenSync()]);
 
-  console.log(req.body);
-
   const parsed = JSON.parse(req.body);
 
   const { sender, target, asset, noteType } = parsed;
@@ -33,9 +31,7 @@ export default async function handler(
   const runner = await runCommand(other, (data) => data);
   console.log(runner);
 
-  // console.log(command);
+  // TODO should do more here
 
-  const tx = "";
-
-  res.status(200).json({ tx, other });
+  res.status(200).json({ other });
 }
