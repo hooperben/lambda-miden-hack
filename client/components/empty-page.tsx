@@ -12,7 +12,9 @@ const EmptyPage = () => {
     <div className="flex justify-center mt-[200px]">
       <Card className="w-[400px] text-center">
         <CardHeader>
-          <CardTitle>Sendooor</CardTitle>
+          <CardTitle>
+            <p className="ml-6">Sendooor</p>
+          </CardTitle>
           <CardDescription>
             For all your Polygon Miden sending needs
           </CardDescription>
