@@ -9,16 +9,21 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { NoteInfo } from "@/types/note";
 import { Card, CardContent } from "./ui/card";
+import useAccountStore from "@/stores/useAccountStore";
+import ImportNote from "./import-note";
 
 const NoteSummary = () => {
+  const accountId = useAccountStore((state) => state.accountId);
   const getNotesBackend = async (): Promise<{
     notes: {
       inputNotes: NoteInfo[];
       outputNotes: NoteInfo[];
     };
   }> => {
-    const request = await fetch("/api/notes");
+    const request = await fetch(`/api/notes?accountId=${accountId}`);
     const data = await request.json();
+
+    console.log(data);
 
     return data;
   };
@@ -28,7 +33,7 @@ const NoteSummary = () => {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["notes"],
+    queryKey: [accountId, "notes"],
     queryFn: getNotesBackend,
   });
 
@@ -44,7 +49,10 @@ const NoteSummary = () => {
       <div className="flex justify-between w-[98%] mt-4 items-center">
         <p className="text-sm">Your Notes</p>
 
-        <NewTransaction />
+        <div className="flex gap-1">
+          <ImportNote />
+          <NewTransaction />
+        </div>
       </div>
 
       <Separator className="m-3 max-w-[98%]" />

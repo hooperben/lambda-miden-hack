@@ -30,7 +30,10 @@ function parseTableToArray(table: string): AccountInfo[] {
         nonce: parseInt(nonce, 10),
       };
     })
-    .filter((account) => account.type !== undefined);
+    .filter(
+      (account) =>
+        account.type !== undefined && account.type === "Regular (updatable)"
+    );
 
   return data;
 }

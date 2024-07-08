@@ -7,15 +7,6 @@ import EmptyPage from "@/components/empty-page";
 export default function Home() {
   const accountId = useAccountStore((state) => state.accountId);
 
-  const testing = () => {
-    // uncomment this to break
-  };
-
-  useEffect(() => {
-    console.log("changed account:", accountId);
-    // const client = new WebClient();
-  }, [accountId]);
-
   return (
     <main className={`flex flex-col w-full font-mono`}>
       <NavBar />

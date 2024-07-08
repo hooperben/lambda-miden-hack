@@ -6,16 +6,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,26 +16,56 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import useAccountStore from "@/stores/useAccountStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "./ui/button";
+import { useMutation } from "@tanstack/react-query";
 
 const FormSchema = z.object({
   amount: z.coerce.number().min(0, {
     message: "amount must be greater than 0",
   }),
-  recipient: z.string().min(10, {
+  target: z.string().min(10, {
     message: "address must be valid address!",
   }),
+  noteType: z.string().optional(),
 });
 
 const NewTransaction = () => {
+  const accountId = useAccountStore((state) => state.accountId);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       amount: 0,
-      recipient: "",
+      target: "",
+      noteType: "private",
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  const faucetId = "0xae77f3516204d2c3";
+
+  const sendTransaction = async (data: z.infer<typeof FormSchema>) => {
+    await fetch("/api/send", {
+      method: "POST",
+      body: JSON.stringify({
+        sender: accountId,
+        target: data.target,
+        asset: `${data.amount}::${faucetId}`,
+        noteType: data.noteType,
+      }),
+    });
+  };
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: sendTransaction,
+    onSuccess: () => {},
+  });
+
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    mutateAsync(data);
     toast({
       title: "You submitted the following values:",
       description: (
@@ -51,7 +74,7 @@ const NewTransaction = () => {
         </pre>
       ),
     });
-  }
+  };
 
   return (
     <div className="font-mono">
@@ -61,18 +84,20 @@ const NewTransaction = () => {
         </DialogTrigger>
         <DialogContent className="font-mono">
           <DialogHeader>
-            <DialogTitle>Create New Transaction</DialogTitle>
+            <DialogTitle className="text-center">
+              Create New Transaction
+            </DialogTitle>
             <DialogDescription>
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="w-2/3 space-y-6"
+                  className="flex flex-col justify-center"
                 >
                   <FormField
                     control={form.control}
                     name="amount"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="mt-4">
                         <FormLabel>Amount to Send</FormLabel>
                         <FormControl>
                           <Input {...field} />
@@ -81,12 +106,13 @@ const NewTransaction = () => {
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
-                    name="recipient"
+                    name="target"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Recipient</FormLabel>
+                      <FormItem className="mt-4">
+                        <FormLabel>Recipient Address ID</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -94,7 +120,14 @@ const NewTransaction = () => {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit">Send!</Button>
+
+                  <p className="my-2">Sending token id: {faucetId}</p>
+                  <p className="my-2">Sending from address: {accountId}</p>
+                  <p className="my-2">Notes values are private by default</p>
+
+                  <Button type="submit" className="mb-4">
+                    {isPending ? "Loading.." : "Send!"}
+                  </Button>
                 </form>
               </Form>
             </DialogDescription>

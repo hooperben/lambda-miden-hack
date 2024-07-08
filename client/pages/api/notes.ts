@@ -7,6 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const { accountId } = req.query;
   await Promise.all([await midenSync()]);
 
   const extractHashes = (
@@ -39,8 +40,12 @@ export default async function handler(
     return { inputNotes, outputNotes };
   };
 
+  console.log(
+    `cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden notes -l --account-id ${accountId}`
+  );
+
   const command = await runCommand(
-    "cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden notes -l",
+    `cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden notes -l --account-id ${accountId}`,
     extractHashes
   );
 
@@ -66,6 +71,8 @@ export default async function handler(
       responses.outputNotes.push(currentNoteDetails);
     }
   }
+
+  console.log(responses);
 
   res.status(200).json({ notes: responses });
 }
