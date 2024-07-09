@@ -1,3 +1,4 @@
+import { CLI_PATH } from "@/consts/cli-path";
 import { runCommand } from "./run-command";
 
 export const getNoteData = async (noteId: string): Promise<any> => {
@@ -104,7 +105,7 @@ export const getNoteData = async (noteId: string): Promise<any> => {
   };
 
   const command = await runCommand(
-    `cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden notes --show ${noteId}`,
+    `${CLI_PATH} miden notes --show ${noteId}`,
     parseNoteInformation
   );
 

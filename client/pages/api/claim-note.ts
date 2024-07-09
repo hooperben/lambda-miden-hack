@@ -10,6 +10,7 @@ const removeMnoSuffix = (input: string): string => {
   return input;
 };
 import { runCommand } from "@/helpers/run-command";
+import { CLI_PATH } from "@/consts/cli-path";
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,7 +32,7 @@ export default async function handler(
   // const importCommand = `cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden import ${filePath}`;
   // const importRunner = await runCommand(importCommand, (data) => data);
 
-  const command = `cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden consume-notes --account ${accountId} ${removeMnoSuffix(
+  const command = `${CLI_PATH} miden consume-notes --account ${accountId} ${removeMnoSuffix(
     notePath
   )} --force`;
 

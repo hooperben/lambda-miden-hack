@@ -1,3 +1,4 @@
+import { CLI_PATH } from "@/consts/cli-path";
 import { getNoteData } from "@/helpers/get-note-data";
 import { midenSync } from "@/helpers/miden-sync";
 import { runCommand } from "@/helpers/run-command";
@@ -40,12 +41,8 @@ export default async function handler(
     return { inputNotes, outputNotes };
   };
 
-  console.log(
-    `cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden notes -l --account-id ${accountId}`
-  );
-
   const command = await runCommand(
-    `cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden notes -l --account-id ${accountId}`,
+    `${CLI_PATH} miden notes -l --account-id ${accountId}`,
     extractHashes
   );
 

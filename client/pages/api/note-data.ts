@@ -1,3 +1,4 @@
+import { CLI_PATH } from "@/consts/cli-path";
 import { midenSync } from "@/helpers/miden-sync";
 import { runCommand } from "@/helpers/run-command";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -112,7 +113,7 @@ export default async function handler(
   };
 
   const command = await runCommand(
-    `cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden notes --show ${noteId}`,
+    `${CLI_PATH} miden notes --show ${noteId}`,
     parseNoteInformation
   );
 

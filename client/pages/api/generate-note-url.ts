@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { midenSync } from "@/helpers/miden-sync";
 import { runCommand } from "@/helpers/run-command";
+import { CLI_PATH } from "@/consts/cli-path";
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,7 +23,7 @@ export default async function handler(
 
   // miden export --filename /Users/benhooper/dev/zkBrussels/miden-client/client/public/ -e partial 0x25a654abc87170b6a1dbdb62d281c34d2af92e54e47dbc8d8ec5c85d11d302d3
 
-  const command = `cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden export --filename ${filePath} -e partial ${noteId}`;
+  const command = `${CLI_PATH} miden export --filename ${filePath} -e partial ${noteId}`;
 
   const runner = await runCommand(command, (data) => data);
 

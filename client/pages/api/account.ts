@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { CLI_PATH } from "@/consts/cli-path";
 import { runCommand } from "@/helpers/run-command";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -43,9 +44,13 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const accounts = await runCommand(
-    "cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden account -l",
+    `${CLI_PATH} miden account -l`,
     parseTableToArray
   );
+
+  if (!accounts) {
+    return res.status(400).json({ error: "Failed to get account data" });
+  }
 
   res.status(200).json({ accounts });
 }

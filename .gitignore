@@ -1,3 +1,6 @@
 target
 *.mno
 store.sqlite3
+.env
+
+miden-client.toml

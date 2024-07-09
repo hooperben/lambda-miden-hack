@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { midenSync } from "@/helpers/miden-sync";
 import { runCommand } from "@/helpers/run-command";
+import { CLI_PATH } from "@/consts/cli-path";
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,15 +24,15 @@ export default async function handler(
 
   // BEN token id = 0xae77f3516204d2c3
 
-  const other = `cd /Users/benhooper/dev/zkBrussels/miden-client/testing && miden mint --target ${target} --asset ${asset} --note-type ${noteType.toLowerCase()} --force`;
-
-  console.log(other);
+  const mintCommand = `${CLI_PATH} miden mint --target ${target} --asset ${asset} --note-type ${noteType.toLowerCase()} --force`;
 
   console.log("running command");
-  const runner = await runCommand(other, (data) => data);
+  const runner = await runCommand(mintCommand, (data) => data);
+
+  if (!runner) {
+    return res.status(400).json({ error: "Failed to mint note" });
+  }
   console.log(runner);
 
-  // TODO should do more here
-
-  res.status(200).json({ other });
+  res.status(200).json({ mintCommand });
 }

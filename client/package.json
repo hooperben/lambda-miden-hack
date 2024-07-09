@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "get-cli-path": "./scripts/get-miden-cli-path.sh ../miden-cli-local"
   },
   "dependencies": {
     "@demox-labs/miden-sdk": "^0.0.3",
