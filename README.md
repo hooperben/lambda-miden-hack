@@ -1,4 +1,4 @@
-# Miden Sendoor
+# Polygon Miden Sendoor
 
 This is the start of a project that will allow for Miden transactions to be ran from a web interface (currently only rust or CLI options are available).
 
