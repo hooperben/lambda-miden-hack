@@ -58,6 +58,14 @@ and moving to the WebClient will shouldn't be too tricky - we just need to repla
 
 endpoints with calls to the WebClient.
 
+### Known Bugs
+
+There's a few, for starters:
+
+- Error Handling is not great, if something does break, chances are you'll have to look in the console
+- Refetching state updates is not great, and could be improved
+- Note retrieval is not account specific - all notes in the UI are shown, regardless of the account. This is a miden CLI issue (I think), but I'll investigate further and create a PR there if necessary.
+
 ## Application Screenshots
 
 ### Sign In Page

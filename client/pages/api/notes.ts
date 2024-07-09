@@ -69,7 +69,5 @@ export default async function handler(
     }
   }
 
-  console.log(responses);
-
   res.status(200).json({ notes: responses });
 }

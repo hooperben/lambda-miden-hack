@@ -20,8 +20,6 @@ export const runCommand = async <T>(
       return undefined;
     }
 
-    console.log(`stdout: ${stdout}`);
-
     const parsed = parser(stdout);
 
     return parsed;
