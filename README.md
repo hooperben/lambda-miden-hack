@@ -58,7 +58,7 @@ and moving to the WebClient will shouldn't be too tricky - we just need to repla
 
 endpoints with calls to the WebClient.
 
-#### Screenshots
+## Application Screenshots
 
 ### Sign In Page
 
